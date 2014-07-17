@@ -1,0 +1,258 @@
+{{extend 'layout.html'}}
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+</head>
+    
+<style type="text/css">
+   body { background: #EBF5FF; }
+</style>    
+    
+<body>
+
+<div class="container">
+
+	<h1 id="topHeader" class="center"> Math Performance Predictor </h1>
+	<hr>
+	<!-- Introduction / Tutorial Text -->
+	<div class ="row">
+		<div class= "span4">
+		 <strong>1)	Welcome! </strong>
+		  This project is an NSF-funded study for a collaborative team from UCSC, 
+		  UT Austin, and the Los Alamos National Laboratory (LANL), to create an 
+		  agent-based model of data from a data-warehouse accumulated by San Jose 
+		  Unified School District. The model was to examine the potential variables 
+		  that predict 8th grade math performance. This is an interactive website
+		  where individuals can manipulate some of the data and relate them to their
+		  own situations.
+		</div>
+		
+		<div class= "span4">
+			<strong>2)  To get started </strong> interact with the sliders
+			on the right. There will be multiple variables in which you can 
+			interact with. Once you are done hit "Generate Results"
+			to see your results.
+		</div>
+		
+		<div class= "span4">
+			<strong>3) To save</strong> 
+      your results, create an account and 
+			Press "Save Results" to store the variables used in 
+			your run and the results generated into your own database.
+		</div>
+	</div>
+	<hr>
+	
+	<!-- 		Chart		  -->
+	<div class = "row">
+		<div class="span8">
+			<div id="chartdiv"></div>
+		</div>
+	<!--	 Sliders 	 -->
+		<div id="dataDiv" class ="span4">
+			<div id = "sliderDiv">
+				<h4>Professional Development for Teachers</h4>
+				<p>Which Teachers Receive it?</p>
+				<label class="radio">
+					<input type="radio" name="optionsRadios" id="optionsRadios1" value="option1" checked>
+				 	 Weakest Teachers
+				</label>
+				<label class="radio">
+				  	<input type="radio" name="optionsRadios" id="optionsRadios2" value="option2">
+				 	Any Teachers
+				</label>
+				<br>
+				
+				<label for="amount1"><strong class="variable">X</strong><strong> = </strong>Percent of all teachers who receive it?</label>
+			    <input type="text" id="amount1" style="width: 25px; color: #f6931f; font-weight: bold;" /><strong class="percent">%</strong>
+			
+				<div id="slider1"></div>
+				<hr>
+				<h4>Student Skill Level & Compatibility </h4>
+				
+				<label for="amount2"><strong class="variable">Y</strong><strong> = </strong>Students Matched to Teachers</label>
+			    <input type="text" id="amount2" style="width: 25px; color: #f6931f; font-weight: bold;" /><strong class="percent">%</strong>
+			    
+				<div id="slider2"></div>
+				<br>
+				
+				<label for="amount3"><strong class="variable">Z</strong><strong> = </strong>Students Matched to Students</label>
+			    <input type="text" id="amount3" style="width: 25px; color: #f6931f; font-weight: bold;" /><strong class="percent">%</strong>
+				<div id="slider3"></div>
+				
+				<hr>
+				 <button id="generateGraphButton" class="btn btn-medium btn-primary btn-block" type="button">Generate Results</button>
+				 <br>
+				  		<!-- Button to trigger modal -->
+				<a href="#myModal" class="btn btn-medium btn-success btn-block" type="button" data-toggle="modal">Save Results</a>
+		<!--  {{=A('Save Results', _id="saveButton", _class='btn btn-medium btn-success btn-block', _href=URL('default', 'add'))}} -->		
+			</div>
+		</div>
+	</div>
+	
+	  <!--   Bootstrap Modal -->
+ 		<!-- Modal -->
+ 		<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 		  <div class="modal-header">
+ 		    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+ 		    <h3 id="myModalLabel">Save Entry?</h3>
+ 		  </div>
+ 		  <div class="modal-body">
+ 		    <p class="modal-p">Are you sure you want to save?</p>
+ 		  </div>
+ 		  <div class="modal-footer">
+ 		    <button class="btn" data-dismiss="modal" aria-hidden="true">Nevermind</button>
+ 		    <a href="#myModal2" id="saveButton" class="btn btn-primary" data-dismiss="modal" type="button" data-toggle="modal">Save changes</a>
+ 		  </div>
+ 		</div>
+ 		
+ 			  <!--   Bootstrap Modal -->
+ 		<!-- Modal -->
+ 		<div id="myModal2" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+ 		  <div class="modal-header">
+ 		    <h3 id="myModalLabel">Entry Successfully Saved</h3>
+ 		  </div>
+ 		  <div class="modal-body">
+ 		    <p class="modal-p">Your entry has been successfully saved.</p>
+ 		  </div>
+ 		  <div class="modal-footer">
+ 		    {{=A('Back to Home', _class="btn btn-primary", _href=URL('default','index'))}}
+ 		  </div>
+ 		</div>
+	
+	<hr>
+		
+	<h1 id="table">Saved Results</h1>	
+	{{=grid}}
+		
+</div>
+ 
+<script>
+$(document).ready(function(){
+	
+	//<========== SLIDER JAVASCRIPT ================>
+	
+	$(function(){
+	$( "#slider1" ).slider({
+		orientation: "horizontal",
+		animate : true,
+		min: 1,
+	    max: 100,
+	    value: 0,
+	    slide: function( event, ui ) {
+	      $( "#amount1" ).val( ui.value );
+	    }
+	  });
+	  $( "#amount1" ).val( $( "#slider1").slider( "value" ) );
+	});
+
+	$(function(){
+		$( "#slider2" ).slider({
+			orientation: "horizontal",
+			animate : true,
+			min: 1,
+		    max: 100,
+		    value:0,
+		    slide: function( event, ui ) {
+		      $( "#amount2" ).val( ui.value );
+		    }
+		  });
+		  $( "#amount2" ).val( $( "#slider2").slider( "value" ));
+		});
+		
+	$(function(){
+		$( "#slider3" ).slider({
+			orientation: "horizontal",
+			animate : true,
+			min: 1,
+		    max: 100,
+		    value:0,
+		    slide: function( event, ui ) {
+		      $( "#amount3" ).val( ui.value );
+		    }
+		  });
+		  $( "#amount3" ).val( $( "#slider3").slider( "value" ) );
+		});
+	 	
+	//<================ END SLIDER JAVASCRIPT ===========================>
+	
+	// <=============== START GRAPH JAVASCRIPT ==========================> 
+		
+	 	var ticks = ['3rd', '4th', '5th', '6th', '7th', '8th'];
+    var emptySeries = [0,0,0,0,0,0];
+    var value1, value2, value3, result;
+	
+	  $.jqplot.config.enablePlugins = true;
+      $("#generateGraphButton").on("click", generateGraph);
+      
+      $("#saveButton").on("click", function(){
+    	  // Get values from the sliders
+    	  	value1 = $( "#amount1" ).val();
+      		value2 = $( "#amount2" ).val();
+      		value3 = $( "#amount3" ).val(); 
+          var number = Math.floor((Math.random()*100)+1);
+      		result = number+"%";
+      	 
+    	  $.ajax({
+              url:"{{=URL('default', 'save')}}",
+              data: {'var1': value1, 'var2': value2, 'var3': value3, 'result':result }
+          })      
+      //    alert("Entry Saved");          
+      });
+ 
+    	function generateGraph(state){
+    		// Clear the chart div before generating a new one
+    	  $( "#chartdiv" ).empty();
+
+    		var series;
+      	
+      	var ran1 = Math.floor((Math.random()*100)+1);
+      	var ran2 = Math.floor((Math.random()*100)+1);
+      	var ran3 = Math.floor((Math.random()*100)+1);
+      	var ran4 = Math.floor((Math.random()*100)+1);
+       	var ran5 = Math.floor((Math.random()*100)+1);
+      	var ran6 = Math.floor((Math.random()*100)+1);
+
+      	if(state == 0){
+      		series = emptySeries;
+      	} else {
+          	series = [ran1,ran2,ran3,ran4,ran5,ran6];	
+      	}
+    	  
+    	  plot1 = $.jqplot('chartdiv', [series], {
+              // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
+              animate: !$.jqplot.use_excanvas,
+              seriesDefaults:{
+                  renderer:$.jqplot.BarRenderer,
+                  pointLabels: { show: true }
+              },
+              axes: {
+                  xaxis: {
+                      renderer: $.jqplot.CategoryAxisRenderer,
+                      ticks: ticks,
+                      label: "Grade Level"
+                  },	 
+              
+              	  yaxis:{
+              		  min:0,
+              		  max:100,
+              		  label: "Test Scores",
+                		labelRenderer: $.jqplot.CanvasAxisLabelRenderer 
+              	  }
+              },
+              highlighter: { show: false }
+          });
+		}
+ 
+ // <================= ADD EMPTY CHART ===========================>
+    	
+ 		generateGraph(0);
+    	
+  // <================= End Graph Javascript ======================>
+
+});
+</script>
+ 
+</body>
+</html>
